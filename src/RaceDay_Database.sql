@@ -38,7 +38,7 @@
 
 IF DB_ID('RaceDay') IS NULL
 BEGIN
-    CREATE DATABASE RaceDay;
+    EXEC('CREATE DATABASE RaceDay');
 END;
 GO
 
