@@ -62,6 +62,51 @@ The `docs` directory contains the approved Part 1 planning documentation. The SQ
 - GitHub
 - GitHub Actions
 
+## Getting Started
+
+### Prerequisites
+
+- Microsoft SQL Server (2019 or later recommended)
+- SQL Server Management Studio (SSMS)
+- Git
+
+### Setup Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Slindile48th/RaceDay.git
+   cd RaceDay
+   ```
+
+2. **Open the database script:**
+   - Open SQL Server Management Studio
+   - Open the file `src/RaceDay_Database.sql`
+
+3. **Execute the script:**
+   - Click the **Execute** button or press `Ctrl+E`
+   - The script will:
+     - Create the RaceDay database
+     - Create all six required tables (Users, Events, Categories, Routes, Entries, Results)
+     - Apply all keys and constraints
+     - Insert sample data
+     - Run verification queries
+
+4. **Verify the setup:**
+   - In the Object Explorer, expand **Databases** and verify that **RaceDay** appears
+   - Expand the RaceDay database and verify that all six tables are present
+   - The script output will display the sample data and verification query results
+
+### Database Structure
+
+The RaceDay database includes:
+
+- **Users** – system accounts for Organisers and Participants
+- **Events** – races managed by Organisers
+- **Categories** – event categories (e.g., age groups, distances)
+- **Routes** – route information for each event
+- **Entries** – participant enrolments in event categories
+- **Results** – participant results and finishing positions
+
 ## CI/CD
 
 GitHub Actions automatically validates the required RaceDay repository structure whenever changes are pushed or a pull request is opened or updated.
