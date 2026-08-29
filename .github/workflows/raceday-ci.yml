@@ -2,12 +2,28 @@ name: RaceDay CI
 
 on:
   push:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
   pull_request:
     types: [opened, synchronize, reopened]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate-repository-structure:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
 
     steps:
       - name: Check out repository
@@ -33,18 +49,26 @@ jobs:
             ".gitignore"
           )
 
+          # Check directories
           for directory in "${required_directories[@]}"; do
             if [[ ! -d "$directory" ]]; then
-              echo "ERROR: Required directory is missing: $directory"
+              echo "::error::Required directory is missing: $directory"
               exit 1
             fi
           done
 
+          # Check files (strict case-sensitive)
           for file in "${required_files[@]}"; do
             if [[ ! -f "$file" ]]; then
-              echo "ERROR: Required file is missing: $file"
+              echo "::error::Required file is missing: $file"
               exit 1
             fi
           done
 
-          echo "RaceDay repository structure validation passed."
+          # Optional: Case-insensitive warning (helps developers)
+          echo "::notice::Repository structure validation passed successfully."
+
+      # Optional: Propagate a result for downstream jobs
+      - name: Set validation output
+        id: set-result
+        run: echo "status=passed" >> $GITHUB_OUTPUT
