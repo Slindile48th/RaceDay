@@ -61,6 +61,141 @@ The implemented API in Part 2 should closely follow this plan. Any deliberate de
 
 ---
 
+## Data Types and Field Requirements
+
+### Common Field Types
+
+- **string** – text (max length specified in request body)
+- **integer** – whole number
+- **decimal** – decimal number (e.g., 10.50 for distance in kilometres)
+- **date** – ISO 8601 format (YYYY-MM-DD)
+- **time** – ISO 8601 format (HH:MM:SS)
+- **datetime** – ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
+
+### Request Body Field Status
+
+- **Required fields** are included in the request body tables above.
+- **Optional fields** (e.g., `DistanceKM` in Categories, `ElevationGainM` in Routes) are marked `NULL` in the database schema and may be omitted from requests.
+
+---
+
+## Request and Response Examples
+
+### Example 1: User Registration (POST /api/auth/register)
+
+**Request:**
+```json
+{
+  "FirstName": "Sipho",
+  "LastName": "Nkosi",
+  "Email": "sipho.nkosi@example.com",
+  "Password": "SecurePassword123!",
+  "Role": "Participant"
+}
+```
+
+**Success Response (201 Created):**
+```json
+{
+  "UserID": 5,
+  "FirstName": "Sipho",
+  "LastName": "Nkosi",
+  "Email": "sipho.nkosi@example.com",
+  "Role": "Participant",
+  "CreatedAt": "2026-08-29T10:30:00"
+}
+```
+
+**Error Response (409 Conflict):**
+```json
+{
+  "error": "Email already registered"
+}
+```
+
+### Example 2: Create Event (POST /api/events)
+
+**Request:**
+```json
+{
+  "EventName": "Cape Town Trail Run",
+  "Description": "A scenic trail running event in the Cape Town area.",
+  "EventDate": "2026-10-15",
+  "Location": "Cape Town, Western Cape",
+  "DistanceKM": 21.5,
+  "EventType": "Run",
+  "RegistrationDeadline": "2026-10-05"
+}
+```
+
+**Success Response (201 Created):**
+```json
+{
+  "EventID": 4,
+  "OrganizerID": 1,
+  "EventName": "Cape Town Trail Run",
+  "Description": "A scenic trail running event in the Cape Town area.",
+  "EventDate": "2026-10-15",
+  "Location": "Cape Town, Western Cape",
+  "DistanceKM": 21.5,
+  "EventType": "Run",
+  "RegistrationDeadline": "2026-10-05",
+  "CreatedAt": "2026-08-29T10:30:00"
+}
+```
+
+### Example 3: Retrieve Event Enrolments (GET /api/enrolments/me)
+
+**Success Response (200 OK):**
+```json
+[
+  {
+    "EntryID": 1,
+    "EventID": 1,
+    "EventName": "Durban Sunrise Run",
+    "CategoryID": 2,
+    "CategoryName": "Senior 10km",
+    "EntryDate": "2026-08-20T14:30:00"
+  },
+  {
+    "EntryID": 5,
+    "EventID": 3,
+    "EventName": "Cape Town Coastal Cycle",
+    "CategoryID": 7,
+    "CategoryName": "Senior Cycle",
+    "EntryDate": "2026-08-25T09:15:00"
+  }
+]
+```
+
+---
+
+## Implementation Notes
+
+### Authentication
+
+- Protected endpoints require an **Authorization** header with a Bearer token: `Authorization: Bearer <token>`
+- The token is returned by the `/api/auth/login` endpoint.
+- Without a valid token, protected endpoints return **401 Unauthorized**.
+
+### Date and Time Formats
+
+- Dates use **ISO 8601** format: `YYYY-MM-DD` (e.g., `2026-10-15`)
+- Times use **ISO 8601** format: `HH:MM:SS` (e.g., `00:52:34`)
+- DateTimes use **ISO 8601** format: `YYYY-MM-DDTHH:MM:SS` (e.g., `2026-08-29T10:30:00`)
+- All times are in UTC or the server's configured timezone.
+
+### Validation
+
+- Distances and positions must be greater than zero.
+- Email addresses must be unique.
+- Registration deadlines cannot be after event dates.
+- Roles must be `Organiser` or `Participant`.
+- Event types must be `Run`, `Walk`, or `Cycle`.
+- Result statuses must be `Finished`, `DNF`, `DNS`, or `Disqualified`.
+
+---
+
 ## Design Notes
 
 - The authenticated user's identity is obtained from the authentication context for protected operations. Participants therefore do not submit a `UserID` when creating an enrolment.
