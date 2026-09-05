@@ -29,6 +29,7 @@ public class User
     // One organiser can manage many events.
     public ICollection<Event>? Events { get; set; } = new List<Event>();
 
-    // One participant can submit multiple event entries.
+// A user can have multiple event entries.
+// Role-based authorization will determine who can create entries.
     public ICollection<Entry>? Entries { get; set; } = new List<Entry>();
 }

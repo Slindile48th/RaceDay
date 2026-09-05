@@ -19,6 +19,6 @@ public class Entry
     // A category can have many entries.
     public Category Category { get; set; } = null!;
 
-    // An entry can have one result.
+// An entry may have zero or one result, depending on whether the participant has completed the event.
     public Result? Result { get; set; }
 }

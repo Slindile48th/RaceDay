@@ -27,6 +27,6 @@ public class Result
 
     public DateTime RecordedAt { get; set; }
 
-    // One entry can have one associated result.
+// An entry may have zero or one associated result.
     public Entry Entry { get; set; } = null!;
 }
